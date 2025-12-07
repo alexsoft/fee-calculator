@@ -22,12 +22,24 @@ final class CalculateFeeRequestMapperTest extends TestCase
     #[DataProvider('invalidTermsDataProvider')]
     public function it_throws_exception_for_invalid_term(string $termString): void
     {
+        $sut = $this->createSut();
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Invalid term. Got [{$termString}]. Expected one of: 12, 24");
 
+        $sut->map('1000', $termString);
+    }
+
+    #[Test]
+    #[DataProvider('invalidAmountDataProvider')]
+    public function it_throws_exception_for_invalid_amount(string $amountString): void
+    {
         $sut = $this->createSut();
 
-        $sut->map('1000', $termString);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid amount string. It must be a number. Got: {$amountString}");
+
+        $sut->map($amountString, '24');
     }
 
     #[Test]
@@ -56,16 +68,25 @@ final class CalculateFeeRequestMapperTest extends TestCase
     }
 
     /**
-     * @return iterable<array<numeric-string>>
+     * @return iterable<string, array<numeric-string>>
      */
     public static function invalidTermsDataProvider(): iterable
     {
-        yield ['1'];
-        yield ['2'];
-        yield ['2.22'];
-        yield ['5'];
-        yield ['12.01'];
-        yield ['12.99'];
+        yield '1' => ['1'];
+        yield '2' => ['2'];
+        yield '2.22' => ['2.22'];
+        yield '5' => ['5'];
+        yield '12.01' => ['12.01'];
+        yield '12.99' => ['12.99'];
+    }
+
+    /**
+     * @return iterable<string, array<numeric-string>>
+     */
+    public static function invalidAmountDataProvider(): iterable
+    {
+        yield 'xxx' => ['xxx'];
+        yield 'a' => ['a'];
     }
 
     /**
