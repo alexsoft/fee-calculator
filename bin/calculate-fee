@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+use Alexsoft\FeeCalculator\Application\CalculateFeeHandler;
+use Alexsoft\FeeCalculator\Business\Service\Calculator;
+use Alexsoft\FeeCalculator\Business\Service\FeeRoundingService;
+use Alexsoft\FeeCalculator\Infrastructure\Repository\InMemoryFeeStructureRepository;
+use Alexsoft\FeeCalculator\Presentation\CalculateFeeCommandMapper;
+use Alexsoft\FeeCalculator\Presentation\Printer;
+use Brick\Math\BigInteger;
+
+$printer = new Printer();
+
+try {
+    $amountString = $argv[1] ?? '';
+    $termString = $argv[2] ?? '';
+
+    $numberFormatter = new NumberFormatter('en_LU', NumberFormatter::DECIMAL);
+    $numberFormatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 2);
+    $numberFormatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 2);
+    $numberFormatter->setAttribute(NumberFormatter::GROUPING_USED, 1);
+
+    $mapper = new CalculateFeeCommandMapper($numberFormatter);
+
+    $handler = new CalculateFeeHandler(
+        new Calculator(
+            new InMemoryFeeStructureRepository(require __DIR__ . '/../config/breakpoints.php'),
+            new FeeRoundingService(BigInteger::of(5)),
+        ),
+    );
+
+    $fee = $handler->handle(
+        $mapper->map($amountString, $termString),
+    );
+    $printer->printSuccess($fee->formatWith($numberFormatter));
+    exit(0);
+} catch (InvalidArgumentException|RuntimeException $e) {
+    $printer->printError($e->getMessage());
+
+    exit(1);
+} catch (Throwable $e) {
+    $printer->printError("Unexpected error occurred\n");
+
+    exit(2);
+}

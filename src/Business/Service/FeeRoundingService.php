@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Business\Service;
+namespace Alexsoft\FeeCalculator\Business\Service;
 
 use Brick\Math\BigNumber;
 use Brick\Money\Money;
@@ -13,7 +13,7 @@ final readonly class FeeRoundingService
         private BigNumber $divisibleBy,
     ) {}
 
-    public function roundUp(Money $amount, Money $fee): Money
+    public function roundFeeToMakeTotalDivisible(Money $amount, Money $fee): Money
     {
         $sum = $amount->plus($fee);
 

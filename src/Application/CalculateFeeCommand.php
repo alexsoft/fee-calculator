@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Application;
+namespace Alexsoft\FeeCalculator\Application;
 
-use Alexsoft\Fee\Business\Domain\TermMonths;
+use Alexsoft\FeeCalculator\Business\Domain\TermMonths;
 use Brick\Money\Money;
 
 final readonly class CalculateFeeCommand

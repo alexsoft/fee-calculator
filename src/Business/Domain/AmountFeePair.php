@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Business\Domain;
+namespace Alexsoft\FeeCalculator\Business\Domain;
 
 use Brick\Money\Money;
 

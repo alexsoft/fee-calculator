@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Business\Contract;
+namespace Alexsoft\FeeCalculator\Business\Contract;
 
-use Alexsoft\Fee\Business\Domain\FeeStructure;
-use Alexsoft\Fee\Business\Domain\TermMonths;
+use Alexsoft\FeeCalculator\Business\Domain\FeeStructure;
+use Alexsoft\FeeCalculator\Business\Domain\TermMonths;
 
 interface FeeStructureRepository
 {

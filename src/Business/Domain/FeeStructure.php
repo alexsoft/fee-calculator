@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Business\Domain;
+namespace Alexsoft\FeeCalculator\Business\Domain;
 
 use Brick\Money\Money;
 use InvalidArgumentException;
@@ -19,34 +19,35 @@ final readonly class FeeStructure
             throw new InvalidArgumentException('FeeStructure must not be empty');
         }
 
-        $this->amountFeePairs = array_values($amountFeePairs);
+        $amountFeePairsList = array_values($amountFeePairs);
+
+        // Validate sorting
+        for ($i = 1; $i < count($amountFeePairsList); $i++) {
+            if ($amountFeePairsList[$i]->amount->isLessThanOrEqualTo($amountFeePairsList[$i - 1]->amount)) {
+                throw new InvalidArgumentException('AmountFeePairs must be sorted by amount in ascending order');
+            }
+        }
+
+        $this->amountFeePairs = $amountFeePairsList;
     }
 
     public function feeFor(Money $amount): Money
     {
-        $lowerPair = null;
-        $upperPair = null;
-
-        foreach ($this->amountFeePairs as $amountFeePair) {
+        foreach ($this->amountFeePairs as $i => $amountFeePair) {
             if ($amountFeePair->amount->isEqualTo($amount)) {
                 return $amountFeePair->fee;
             }
 
-            if ($amountFeePair->amount->isLessThan($amount)) {
-                $lowerPair = $amountFeePair;
-            }
-
             if ($amountFeePair->amount->isGreaterThan($amount)) {
-                $upperPair = $amountFeePair;
-                break;
+                if ($i === 0) {
+                    throw new RuntimeException('Amount outside of valid range');
+                }
+
+                return $this->interpolate($amount, $this->amountFeePairs[$i - 1], $amountFeePair);
             }
         }
 
-        if (is_null($lowerPair) || is_null($upperPair)) {
-            throw new RuntimeException('Amount outside of valid range');
-        }
-
-        return $this->interpolate($amount, $lowerPair, $upperPair);
+        throw new RuntimeException('Amount outside of valid range');
     }
 
     public function canHandleAmount(Money $amount): bool
@@ -67,15 +68,15 @@ final readonly class FeeStructure
 
     private function interpolate(Money $amount, AmountFeePair $lowerPair, AmountFeePair $upperPair): Money
     {
-        $ratio = $amount
-            ->minus($lowerPair->amount)
-            ->dividedBy(
-                $upperPair->amount->minus($lowerPair->amount)->getAmount(),
-            );
+        // Calculate: ratio = (amount - lowerAmount) / (upperAmount - lowerAmount)
+        $amountRange = $upperPair->amount->minus($lowerPair->amount);
+        $amountOffset = $amount->minus($lowerPair->amount);
+        $ratio = $amountOffset->dividedBy($amountRange->getAmount());
 
-        return $lowerPair->fee
-            ->plus(
-                $ratio->multipliedBy($upperPair->fee->minus($lowerPair->fee)->getAmount()),
-            );
+        // Calculate: fee = lowerFee + ratio * (upperFee - lowerFee)
+        $feeRange = $upperPair->fee->minus($lowerPair->fee);
+        $feeOffset = $ratio->multipliedBy($feeRange->getAmount());
+
+        return $lowerPair->fee->plus($feeOffset);
     }
 }

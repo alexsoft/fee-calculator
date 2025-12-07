@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Application;
+namespace Alexsoft\FeeCalculator\Application;
 
-use Alexsoft\Fee\Business\Service\Calculator;
+use Alexsoft\FeeCalculator\Business\Service\Calculator;
 use Brick\Money\Money;
 
 final readonly class CalculateFeeHandler

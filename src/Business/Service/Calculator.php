@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Business\Service;
+namespace Alexsoft\FeeCalculator\Business\Service;
 
-use Alexsoft\Fee\Business\Contract\FeeStructureRepository;
-use Alexsoft\Fee\Business\Domain\TermMonths;
+use Alexsoft\FeeCalculator\Business\Contract\FeeStructureRepository;
+use Alexsoft\FeeCalculator\Business\Domain\TermMonths;
 use Brick\Money\Money;
 use RuntimeException;
 
@@ -26,6 +26,6 @@ final readonly class Calculator
 
         $rawFee = $feeStructure->feeFor($amount);
 
-        return $this->roundingService->roundUp($amount, $rawFee);
+        return $this->roundingService->roundFeeToMakeTotalDivisible($amount, $rawFee);
     }
 }

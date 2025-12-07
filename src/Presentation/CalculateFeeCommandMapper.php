@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Presentation;
+namespace Alexsoft\FeeCalculator\Presentation;
 
-use Alexsoft\Fee\Application\CalculateFeeCommand;
-use Alexsoft\Fee\Application\EurMoney;
-use Alexsoft\Fee\Business\Domain\TermMonths;
+use Alexsoft\FeeCalculator\Application\CalculateFeeCommand;
+use Alexsoft\FeeCalculator\Business\Domain\TermMonths;
+use Brick\Money\Money;
 use InvalidArgumentException;
 use NumberFormatter;
 
@@ -25,7 +25,7 @@ final readonly class CalculateFeeCommandMapper
         }
 
         return new CalculateFeeCommand(
-            EurMoney::of($amount),
+            Money::of($amount, 'EUR'),
             $this->createTermMonths($termString),
         );
     }
@@ -34,7 +34,11 @@ final readonly class CalculateFeeCommandMapper
     {
         $termMonths = TermMonths::tryFrom((int)$termString);
 
-        if ($termString != (int)$termString || $termMonths === null) {
+        if (
+            !is_numeric($termString)
+            || $termString != (int)$termString
+            || $termMonths === null
+        ) {
             throw new InvalidArgumentException(
                 "Invalid term. Got [{$termString}]. Expected one of: " . implode(', ', TermMonths::getPossibleValues()),
             );

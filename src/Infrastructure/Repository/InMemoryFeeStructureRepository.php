@@ -2,28 +2,50 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Infrastructure\Repository;
+namespace Alexsoft\FeeCalculator\Infrastructure\Repository;
 
-use Alexsoft\Fee\Application\EurMoney;
-use Alexsoft\Fee\Business\Contract\FeeStructureRepository;
-use Alexsoft\Fee\Business\Domain\AmountFeePair;
-use Alexsoft\Fee\Business\Domain\FeeStructure;
-use Alexsoft\Fee\Business\Domain\TermMonths;
+use Alexsoft\FeeCalculator\Business\Contract\FeeStructureRepository;
+use Alexsoft\FeeCalculator\Business\Domain\AmountFeePair;
+use Alexsoft\FeeCalculator\Business\Domain\FeeStructure;
+use Alexsoft\FeeCalculator\Business\Domain\TermMonths;
+use Brick\Money\Money;
+use InvalidArgumentException;
 
 final readonly class InMemoryFeeStructureRepository implements FeeStructureRepository
 {
     /**
      * @param array<value-of<TermMonths>, list<array{float|int, float|int}>> $breakpoints
      */
-    public function __construct(private array $breakpoints) {}
+    public function __construct(private array $breakpoints)
+    {
+        foreach (TermMonths::cases() as $term) {
+            if (!isset($this->breakpoints[$term->value])) {
+                throw new InvalidArgumentException(
+                    "Missing breakpoints for term {$term->value}",
+                );
+            }
+
+            if (
+                !is_array($this->breakpoints[$term->value])
+                || empty($this->breakpoints[$term->value])
+            ) {
+                throw new InvalidArgumentException(
+                    "Invalid breakpoints for term {$term->value}",
+                );
+            }
+        }
+    }
 
     public function forTerm(TermMonths $termMonths): FeeStructure
     {
         return new FeeStructure(
             ...array_map(
-                static fn($pair) => new AmountFeePair(EurMoney::of($pair[0]), EurMoney::of($pair[1])),
-                $this->breakpoints[$termMonths->value],
+            static fn($pair) => new AmountFeePair(
+                Money::of($pair[0], 'EUR'),
+                Money::of($pair[1], 'EUR'),
             ),
+            $this->breakpoints[$termMonths->value],
+        ),
         );
     }
 }

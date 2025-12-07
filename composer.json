@@ -13,12 +13,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Alexsoft\\Fee\\": "src/"
+            "Alexsoft\\FeeCalculator\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Alexsoft\\Fee\\Tests\\": "tests/"
+            "Alexsoft\\FeeCalculator\\Tests\\": "tests/"
         }
     },
     "config": {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Alexsoft\Fee\Tests\Unit\Presentation;
+namespace Alexsoft\FeeCalculator\Tests\Unit\Presentation;
 
-use Alexsoft\Fee\Application\CalculateFeeCommand;
-use Alexsoft\Fee\Business\Domain\TermMonths;
-use Alexsoft\Fee\Presentation\CalculateFeeCommandMapper;
+use Alexsoft\FeeCalculator\Application\CalculateFeeCommand;
+use Alexsoft\FeeCalculator\Business\Domain\TermMonths;
+use Alexsoft\FeeCalculator\Presentation\CalculateFeeCommandMapper;
 use Brick\Money\Money;
 use InvalidArgumentException;
 use NumberFormatter;
