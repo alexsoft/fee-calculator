@@ -26,7 +26,7 @@ final readonly class InMemoryFeeStructureRepository implements FeeStructureRepos
             }
 
             if (
-                !is_array($this->breakpoints[$term->value])
+                !is_array($this->breakpoints[$term->value]) // @phpstan-ignore booleanNot.alwaysFalse (Must verify structure to be sure)
                 || empty($this->breakpoints[$term->value])
             ) {
                 throw new InvalidArgumentException(
