@@ -14,10 +14,8 @@ jobs:
       matrix:
         php:
           - 8.4
-        dependencies:
-          - locked
 
-    name: PHPStan on PHP ${{ matrix.php }} - ${{ matrix.dependencies }}
+    name: PHPStan on PHP ${{ matrix.php }}
 
     steps:
       - name: Checkout code
@@ -33,7 +31,7 @@ jobs:
       - name: Composer install
         uses: ramsey/composer-install@v3
         with:
-          dependency-versions: "${{ matrix.dependencies }}"
+          dependency-versions: locked
 
       - name: Run static analysis
         run: composer phpstan
