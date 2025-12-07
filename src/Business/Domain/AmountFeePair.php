@@ -6,6 +6,9 @@ namespace Alexsoft\FeeCalculator\Business\Domain;
 
 use Brick\Money\Money;
 
+/**
+ * @codeCoverageIgnore
+ */
 final readonly class AmountFeePair
 {
     public function __construct(

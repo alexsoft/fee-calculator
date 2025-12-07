@@ -7,7 +7,6 @@ namespace Alexsoft\FeeCalculator\Business\Service;
 use Alexsoft\FeeCalculator\Business\Contract\FeeStructureRepository;
 use Alexsoft\FeeCalculator\Business\Domain\TermMonths;
 use Brick\Money\Money;
-use RuntimeException;
 
 final readonly class Calculator
 {
@@ -20,12 +19,8 @@ final readonly class Calculator
     {
         $feeStructure = $this->repository->forTerm($term);
 
-        if (!$feeStructure->canHandleAmount($amount)) {
-            throw new RuntimeException("Provided amount [{$amount->getAmount()}] is out of range of fee structure.");
-        }
+        $initialFee = $feeStructure->feeFor($amount);
 
-        $rawFee = $feeStructure->feeFor($amount);
-
-        return $this->roundingService->roundFeeToMakeTotalDivisible($amount, $rawFee);
+        return $this->roundingService->roundFeeToMakeTotalDivisible($amount, $initialFee);
     }
 }

@@ -21,7 +21,7 @@ final readonly class CalculateFeeCommandMapper
         $amount = $this->numberFormatter->parse($amountString);
 
         if ($amount === false) {
-            throw new InvalidArgumentException('Invalid amount string');
+            throw new InvalidArgumentException("Invalid amount string. It must be a number. Got: {$amountString}");
         }
 
         return new CalculateFeeCommand(

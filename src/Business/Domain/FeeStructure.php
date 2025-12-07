@@ -40,30 +40,14 @@ final readonly class FeeStructure
 
             if ($amountFeePair->amount->isGreaterThan($amount)) {
                 if ($i === 0) {
-                    throw new RuntimeException('Amount outside of valid range');
+                    throw new RuntimeException("Provided amount [{$amount->getAmount()}] is out of range of fee structure.");
                 }
 
                 return $this->interpolate($amount, $this->amountFeePairs[$i - 1], $amountFeePair);
             }
         }
 
-        throw new RuntimeException('Amount outside of valid range');
-    }
-
-    public function canHandleAmount(Money $amount): bool
-    {
-        return $amount->isGreaterThanOrEqualTo($this->getSmallestAmount())
-            && $amount->isLessThanOrEqualTo($this->getBiggestAmount());
-    }
-
-    private function getSmallestAmount(): Money
-    {
-        return $this->amountFeePairs[array_key_first($this->amountFeePairs)]->amount;
-    }
-
-    private function getBiggestAmount(): Money
-    {
-        return $this->amountFeePairs[array_key_last($this->amountFeePairs)]->amount;
+        throw new RuntimeException("Provided amount [{$amount->getAmount()}] is out of range of fee structure.");
     }
 
     private function interpolate(Money $amount, AmountFeePair $lowerPair, AmountFeePair $upperPair): Money

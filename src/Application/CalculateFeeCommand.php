@@ -7,6 +7,9 @@ namespace Alexsoft\FeeCalculator\Application;
 use Alexsoft\FeeCalculator\Business\Domain\TermMonths;
 use Brick\Money\Money;
 
+/**
+ * @codeCoverageIgnore
+ */
 final readonly class CalculateFeeCommand
 {
     public function __construct(
