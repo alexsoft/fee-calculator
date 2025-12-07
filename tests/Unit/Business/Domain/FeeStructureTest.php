@@ -17,6 +17,9 @@ use RuntimeException;
 #[CoversClass(FeeStructure::class)]
 final class FeeStructureTest extends TestCase
 {
+    /**
+     * @param array<AmountFeePair> $pairs
+     */
     #[Test]
     #[DataProvider('invalidAmountFeePairsDataProvider')]
     public function it_validates_structure_of_amount_fee_pairs(array $pairs, string $expectedMessage): void
@@ -27,6 +30,9 @@ final class FeeStructureTest extends TestCase
         new FeeStructure(...$pairs);
     }
 
+    /**
+     * @param array<AmountFeePair> $pairs
+     */
     #[Test]
     #[DataProvider('outOfRangeAmountDataProvider')]
     public function it_throws_exception_for_amount_which_is_out_of_range(
@@ -42,6 +48,9 @@ final class FeeStructureTest extends TestCase
         $sut->feeFor($amount);
     }
 
+    /**
+     * @param array<AmountFeePair> $pairs
+     */
     #[Test]
     #[DataProvider('feeForAmountDataProvider')]
     public function it_can_get_fee_for_amount(
@@ -57,6 +66,9 @@ final class FeeStructureTest extends TestCase
         );
     }
 
+    /**
+     * @return iterable<string, array{pairs: array<AmountFeePair>, expectedMessage: string}>
+     */
     public static function invalidAmountFeePairsDataProvider(): iterable
     {
         yield 'Empty array' => [
@@ -84,6 +96,9 @@ final class FeeStructureTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{pairs: array<AmountFeePair>, amount: Money, expectedMessage: string}>
+     */
     public static function outOfRangeAmountDataProvider(): iterable
     {
         yield 'Amount is lower than fee structure' => [
@@ -105,6 +120,9 @@ final class FeeStructureTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{pairs: array<AmountFeePair>, amount: Money, expectedFee: Money}>
+     */
     public static function feeForAmountDataProvider(): iterable
     {
         $pairs = [
