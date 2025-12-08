@@ -27,7 +27,7 @@ final readonly class InMemoryFeeStructureRepository implements FeeStructureRepos
 
             if (
                 !is_array($this->breakpoints[$term->value]) // @phpstan-ignore booleanNot.alwaysFalse (Must verify structure to be sure)
-                || empty($this->breakpoints[$term->value])
+                || $this->breakpoints[$term->value] === []
             ) {
                 throw new InvalidArgumentException(
                     "Invalid breakpoints for term {$term->value}",
@@ -38,14 +38,14 @@ final readonly class InMemoryFeeStructureRepository implements FeeStructureRepos
 
     public function forTerm(TermMonths $termMonths): FeeStructure
     {
-        return new FeeStructure(
-            ...array_map(
-            static fn($pair) => new AmountFeePair(
+        $amountFeePairs = array_map(
+            static fn(array $pair) => new AmountFeePair(
                 Money::of($pair[0], 'EUR'),
                 Money::of($pair[1], 'EUR'),
             ),
             $this->breakpoints[$termMonths->value],
-        ),
         );
+
+        return new FeeStructure(...$amountFeePairs);
     }
 }
