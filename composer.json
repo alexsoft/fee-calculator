@@ -4,13 +4,13 @@
     "require": {
         "php": "~8.4.0 || ~8.5.0",
         "ext-intl": "*",
-        "brick/math": "^0.14.1",
+        "brick/math": "^0.14.8",
         "brick/money": "^0.10.3"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.48",
-        "phpstan/phpstan": "^2.1.33",
-        "phpunit/phpunit": "^12.5.1"
+        "ergebnis/composer-normalize": "^2.50",
+        "phpstan/phpstan": "^2.1.40",
+        "phpunit/phpunit": "^12.5.14"
     },
     "autoload": {
         "psr-4": {
