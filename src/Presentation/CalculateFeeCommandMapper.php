@@ -25,7 +25,7 @@ final readonly class CalculateFeeCommandMapper
         }
 
         return new CalculateFeeCommand(
-            Money::of($amount, 'EUR'),
+            Money::of((string)$amount, 'EUR'),
             $this->createTermMonths($termString),
         );
     }
