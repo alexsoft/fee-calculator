@@ -17,10 +17,10 @@ final class FeeRoundingServiceTest extends TestCase
     #[Test]
     public function it_returns_original_fee_when_total_is_already_divisible(): void
     {
-        $service = new FeeRoundingService(BigNumber::of(100));
+        $service = new FeeRoundingService(BigNumber::of('100'));
 
-        $amount = Money::of(250, 'USD');
-        $fee = Money::of(50, 'USD');
+        $amount = Money::of('250', 'USD');
+        $fee = Money::of('50', 'USD');
 
         $result = $service->roundFeeToMakeTotalDivisible($amount, $fee);
 
@@ -31,10 +31,10 @@ final class FeeRoundingServiceTest extends TestCase
     #[Test]
     public function it_rounds_fee_up_when_total_has_remainder(): void
     {
-        $service = new FeeRoundingService(BigNumber::of(100));
+        $service = new FeeRoundingService(BigNumber::of('100'));
 
-        $amount = Money::of(255, 'USD');
-        $fee = Money::of(50, 'USD');
+        $amount = Money::of('255', 'USD');
+        $fee = Money::of('50', 'USD');
 
         $result = $service->roundFeeToMakeTotalDivisible($amount, $fee);
 
@@ -43,16 +43,16 @@ final class FeeRoundingServiceTest extends TestCase
         $this->assertEquals('145.00', $result->getAmount()->toScale(2));
 
         $newTotal = $amount->plus($result);
-        $this->assertTrue($newTotal->getAmount()->remainder(BigNumber::of(100))->isZero());
+        $this->assertTrue($newTotal->getAmount()->remainder(BigNumber::of('100'))->isZero());
     }
 
     #[Test]
     public function it_rounds_fee_with_small_remainder(): void
     {
-        $service = new FeeRoundingService(BigNumber::of(100));
+        $service = new FeeRoundingService(BigNumber::of('100'));
 
-        $amount = Money::of(299, 'USD');
-        $fee = Money::of(1, 'USD');
+        $amount = Money::of('299', 'USD');
+        $fee = Money::of('1', 'USD');
 
         $result = $service->roundFeeToMakeTotalDivisible($amount, $fee);
 
@@ -63,10 +63,10 @@ final class FeeRoundingServiceTest extends TestCase
     #[Test]
     public function it_rounds_fee_with_large_remainder(): void
     {
-        $service = new FeeRoundingService(BigNumber::of(100));
+        $service = new FeeRoundingService(BigNumber::of('100'));
 
-        $amount = Money::of(201, 'USD');
-        $fee = Money::of(1, 'USD');
+        $amount = Money::of('201', 'USD');
+        $fee = Money::of('1', 'USD');
 
         $result = $service->roundFeeToMakeTotalDivisible($amount, $fee);
 
@@ -78,10 +78,10 @@ final class FeeRoundingServiceTest extends TestCase
     #[Test]
     public function it_works_with_different_divisor(): void
     {
-        $service = new FeeRoundingService(BigNumber::of(50));
+        $service = new FeeRoundingService(BigNumber::of('50'));
 
-        $amount = Money::of(123, 'USD');
-        $fee = Money::of(10, 'USD');
+        $amount = Money::of('123', 'USD');
+        $fee = Money::of('10', 'USD');
 
         $result = $service->roundFeeToMakeTotalDivisible($amount, $fee);
 
@@ -90,13 +90,13 @@ final class FeeRoundingServiceTest extends TestCase
         $this->assertEquals('27.00', $result->getAmount()->toScale(2));
 
         $newTotal = $amount->plus($result);
-        $this->assertTrue($newTotal->getAmount()->remainder(BigNumber::of(50))->isZero());
+        $this->assertTrue($newTotal->getAmount()->remainder(BigNumber::of('50'))->isZero());
     }
 
     #[Test]
     public function it_works_with_decimal_amounts(): void
     {
-        $service = new FeeRoundingService(BigNumber::of(100));
+        $service = new FeeRoundingService(BigNumber::of('100'));
 
         $amount = Money::of('12.34', 'USD');
         $fee = Money::of('5.67', 'USD');
@@ -108,6 +108,6 @@ final class FeeRoundingServiceTest extends TestCase
         $this->assertEquals('87.66', $result->getAmount()->toScale(2));
 
         $newTotal = $amount->plus($result);
-        $this->assertTrue($newTotal->getAmount()->remainder(BigNumber::of(100))->isZero());
+        $this->assertTrue($newTotal->getAmount()->remainder(BigNumber::of('100'))->isZero());
     }
 }

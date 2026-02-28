@@ -29,7 +29,7 @@ try {
     $handler = new CalculateFeeHandler(
         new Calculator(
             new InMemoryFeeStructureRepository(require __DIR__ . '/../config/breakpoints.php'),
-            new FeeRoundingService(BigInteger::of(5)),
+            new FeeRoundingService(BigInteger::of('5')),
         ),
     );
 

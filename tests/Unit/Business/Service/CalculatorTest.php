@@ -30,7 +30,7 @@ final class CalculatorTest extends TestCase
 
         $this->feeStructureRepository = $this->createMock(FeeStructureRepository::class);
 
-        $this->sut = new Calculator($this->feeStructureRepository, new FeeRoundingService(BigNumber::of(5)));
+        $this->sut = new Calculator($this->feeStructureRepository, new FeeRoundingService(BigNumber::of('5')));
     }
 
     #[Test]
